@@ -31,12 +31,10 @@
     <!-- HEADER STARTS HERE -->
     <div id="header">
 	  <a href="{% url blogango_index %}">
-		<img src="{{ MEDIA_URL }}blogango/images/agiliq_blog_logo.png" width="206" height="67" alt="Agiliq Solutions" />
+		<img src="{{ MEDIA_URL }}blogango/images/agiliq_blog_logo.png" width="255" height="102" alt="I Can Has Startup" />
 	  </a>
 	  <h1 class="message">
-		We love designing and developing websites, but what really drives us is 
-		solving problems and cultivating strong relationships with our clients
-	  </h1>
+India Startup Scene	  </h1>
 	</div>
     <!-- HEADER ENDS HERE -->
     <!-- BREADCRUMBS STARTS HERE -->
@@ -59,6 +57,11 @@
 		{% endblock %}
       </div>
       <div class="rightpanel">
+      <!--NEWSLETTER SIGNUP STARTS-->
+      <div class="newsletter">
+        <input type="button" name="button" id="button" value=" " class="clickbut" />
+      </div>
+       <!--NEWSLETTER SIGNUP ENDS-->
         {% if recents %}
         <div id="blogposts_block">
      	  <div class="block_title">Posts</div>
