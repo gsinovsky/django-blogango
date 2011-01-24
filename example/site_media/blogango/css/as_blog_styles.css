@@ -93,6 +93,7 @@ ul#simple-menu li a.current:hover{color:#2E4560;background:#fff;}
 .block_title{font-family: 'Droid Serif', arial, serif; font-size:18px; line-height:30px; text-transform:uppercase; color:#962000; margin-bottom:10px; font-weight:bold; border-bottom:1px solid #FFF;}
 
 #blogposts_block{ clear:both; background:#FFCC00; padding:20px; height:287px; margin-top:10px; }
+#blogposts_block .block_title{border-bottom:1px solid #E8A219;}
 #blogposts_block .list{ width:280px; float:left;font-family: 'Molengo', arial, serif; font-size:12px; padding-top:0px;}
 #blogposts_block .list li a{font-family: Arial, Helvetica, sans-serif; font-size:12px; color:#962000; text-decoration:none; line-height:30px;  background:url(../images/list_image.png) no-repeat 0px 10px; padding-left:20px; border-bottom:1px solid #E8A219; display:block;  margin-right:20px; font-weight:bold;}
 #blogposts_block .list li a:hover{ color:#000; text-decoration:underline; line-height:30px; border-bottom:1px solid #E8A219; display:block; font-weight:bold;}
