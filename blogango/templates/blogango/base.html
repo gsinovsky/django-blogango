@@ -26,10 +26,10 @@
     <!-- TOP MENU STARTS HERE -->
     <div id="demo-container">
       <ul id="simple-menu">
-        <li><a href="http://www.13styles.com/css-menus/simple-menu/" title="Interviews">Interviews</a></li>
-        <li><a href="http://www.13styles.com/css-menus/simple-menu/" title="Contact">Contact</a></li>
-        <li><a href="http://www.13styles.com/css-menus/simple-menu/" title="About">About</a></li>
-        <li><a href="http://www.13styles.com/css-menus/simple-menu/" title="Home" class="current">Home</a></li>
+        <li><a href="{% url blogango_tag_details tag_slug='interviews' %}" title="Interviews">Interviews</a></li>
+        <li><a href="/2011/01/contact/" title="Contact">Contact</a></li>
+        <li><a href="/2011/01/about-us/" title="About">About</a></li>
+        <li><a href="{% url blogango_index %}" title="Home" class="current">Home</a></li>
       </ul>
     </div>
     <!-- TOP MENU ENDS HERE -->
@@ -119,5 +119,17 @@
   <!--FOOTER CONTAINER ENDS-->
 </div>
 <!--BASE CONTAINER ENDS-->
+<script type="text/javascript">
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-367368-12']);
+_gaq.push(['_trackPageview']);
+
+(function() {
+var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+})();
+
+</script>
 </body>
 </html>

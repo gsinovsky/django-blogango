@@ -126,8 +126,8 @@ def check_comment_spam(request, comment):
     api = Akismet(AKISMET_API_KEY, 'http://%s' % (request.get_host()), request.META['HTTP_USER_AGENT'])
     
     if api.verify_key():
-        akismet_data = {'user_ip': request.META['REMOTE_ADDR'], 
-                        'user_agent': request.META['HTTP_USER_AGENT'], 
+        akismet_data = {'user_ip': request.META.get('REMOTE_ADDR', '127.0.0.1'), 
+                        'user_agent': request.META.get('HTTP_USER_AGENT', ''), 
                         'comment_author': comment.user_name.encode('utf8'), 
                         'comment_author_email': comment.email_id.encode('utf8'), 
                         'comment_author_url': comment.user_url, 
@@ -443,5 +443,14 @@ def generic(request): # A generic form processor.
     if request.method == 'GET':
         pass
     if request.method == 'POST':
-       pass
-        
+        pass
+
+def ichs_handler(request, tag, slug):
+    tags = Tag.objects.filter(slug = tag)
+    blog_entry = BlogEntry.objects.filter(tags__in=tags).filter(slug__startswith=slug)
+    if blog_entry.count():
+        return HttpResponseRedirect(blog_entry[0].get_absolute_url())
+    else:
+        raise Http404()
+
+

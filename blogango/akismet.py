@@ -205,7 +205,7 @@ class Akismet(object):
         data['comment_content'] = comment
         if not 'user_ip' in data:
             try:
-                val = os.environ['REMOTE_ADDR']
+                val = os.environ.get('REMOTE_ADDR', '127.0.0.1')
             except KeyError:
                 raise AkismetError("No 'user_ip' supplied")
             data['user_ip'] = val
