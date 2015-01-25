@@ -70,7 +70,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
 )
 
-ROOT_URLCONF = 'example.urls'
+ROOT_URLCONF = 'urls'
 
 INSTALLED_APPS = (
     'django.contrib.auth',
@@ -78,7 +78,6 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.admin',
-    'django.contrib.markup',
     'django.contrib.humanize',
     'django.contrib.sitemaps',
     'django.contrib.staticfiles',
@@ -87,7 +86,7 @@ INSTALLED_APPS = (
     'django_xmlrpc',
     'taggit',
     'django.contrib.comments',
-    'google_analytics',
+    'south',
 )
 
 try:
@@ -105,3 +104,12 @@ except ImportError:
 }
 
 STATIC_URL = "/static/"
+
+
+# details to send mail
+# EMAIL_HOST = ''
+# EMAIL_BACKEND = ''
+# EMAIL_PORT
+# EMAIL_HOST_USER = ""
+# EMAIL_HOST_PASSWORD = ''
+# EMAIL_USE_TLS = True

@@ -5,9 +5,12 @@ from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.contrib.staticfiles import finders
 from django.contrib.staticfiles.storage import staticfiles_storage
+from django.core.management import call_command
+from django.core import mail
+
 
 from taggit.models import Tag
-from models import Blog, BlogEntry, Comment
+from .models import Blog, BlogEntry, Comment
 
 
 class BlogTestCase(TestCase):
@@ -33,7 +36,7 @@ class BlogTestCase(TestCase):
     def test_bloginstall(self):
         User.objects.create_user(username='foo', password='bar')
         response = self.c.get(reverse('blogango_install'))
-        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.status_code, 200)
         self.c.login(username='foo', password='bar')
         response = self.c.get(reverse('blogango_install'))
         self.assertEqual(response.status_code, 200)
@@ -104,7 +107,7 @@ class TestViews(TestCase):
         response = self.c.get(reverse('blogango_page', args=[2]))
         self.assertEqual(response.status_code, 200)
         response = self.c.get(reverse('blogango_page', args=[3]))
-        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.status_code, 404)
 
     def test_entries_slug(self):
         e1 = BlogEntry.objects.create(title="test", text='foo', created_by=self.user,
@@ -169,12 +172,12 @@ class TestViews(TestCase):
             BlogEntry.objects.create(title="test", text='foo', created_by=self.user,
                     publish_date=datetime.today(), text_markup_type='plain')
         self.assertEqual(BlogEntry.objects.count(), 15)
-        response = self.c.get(reverse('blogango_author_page', args=[self.user.username, 1]))
+        response = self.c.get(reverse('blogango_author_page', args=[self.user.username])+'?page=1')
         self.assertEqual(response.status_code, 200)
-        response = self.c.get(reverse('blogango_author_page', args=[self.user.username, 2]))
+        response = self.c.get(reverse('blogango_author_page', args=[self.user.username])+'?page=2')
         self.assertEqual(response.status_code, 200)
-        response = self.c.get(reverse('blogango_author_page', args=[self.user.username, 3]))
-        self.assertEqual(response.status_code, 302)
+        response = self.c.get(reverse('blogango_author_page', args=[self.user.username])+'?page=3')
+        self.assertEqual(response.status_code, 404)
 
     def test_tagged_entries_pagination(self):
         num_entries = 15
@@ -189,11 +192,7 @@ class TestViews(TestCase):
         response = self.c.get(reverse('blogango_tag_details_page', args=[tag.slug, 2]))
         self.assertEqual(response.status_code, 200)
         response = self.c.get(reverse('blogango_tag_details_page', args=[tag.slug, 3]))
-        self.assertEqual(response.status_code, 302)
-
-    def tearDown(self):
-        self.blog.delete()
-        self.user.delete()
+        self.assertEqual(response.status_code, 404)
 
 
 class TestAdminActions(TestCase):
@@ -226,8 +225,8 @@ class TestAdminActions(TestCase):
         data = {'text_markup_type': 'html', 'created_by':self.user.pk}
         response = self.c.post(reverse("blogango_admin_entry_new"), data)
         self.assertEqual(response.status_code, 200)
-        self.assertFormError(response, "entry_form", "text", "This field is required.")
-        self.assertFormError(response, "entry_form", "tags", "This field is required.")
+        self.assertFormError(response, "form", "text", "This field is required.")
+        self.assertFormError(response, "form", "tags", "This field is required.")
         #post a valid form but don't publish it
         data['text'] = 'test text'
         data['publish_date_0'] = '2011-09-22'
@@ -297,7 +296,7 @@ class TestAdminActions(TestCase):
         self.assertEqual(1, comments.count())
 
     def test_manage_entry_comments(self):
-        """Check if there is a page to see comments for a particulat entry"""
+        """Check if there is a page to see comments for a particular entry"""
         user = User.objects.create_superuser("test", "test@agiliq.com", "test")
         entry = create_test_blog_entry(user)
         create_test_comment(entry)
@@ -339,7 +338,7 @@ class TestFeedUrl(TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_feed_url_on_index(self):
-        response = self.c.get(reverse("blogango_index"))
+        response = self.c.get(reverse("blogango_feed"))
         self.assertGreater(response.content.find('/blog/rss/latest/'), 1)
 
 def create_test_blog_entry(user):
@@ -352,3 +351,43 @@ def create_test_blog_entry(user):
 
 def create_test_comment(entry):
     Comment.objects.create(text="foo", comment_for=entry, is_public=True)
+
+
+
+
+class TestCommentNotificationCase(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username='gonecrazy', email='gonecrazy@gmail.com', password='gonecrazy')
+        self.user.is_staff = True
+        self.user.save()
+        self.blog_entry = create_test_blog_entry(self.user)
+
+
+    def test_comment_notify_sends_email(self):
+        """Test if management command sends mail"""
+        create_test_comment(self.blog_entry)
+        self.assertEqual(len(mail.outbox), 0)
+        call_command('comment_notify')
+        self.assertEqual(len(mail.outbox), 1)
+
+    def test_single_email_send_for_multiple_comments(self):
+        """Test if a single mail send for multiple comments on a blong entry"""
+        for each in range(5):
+            create_test_comment(self.blog_entry)
+        comments = Comment.objects.filter(comment_for=self.blog_entry)
+        self.assertEqual(comments.count(), 5)
+        self.assertEqual(len(mail.outbox), 0)
+        call_command('comment_notify')
+        self.assertEqual(len(mail.outbox), 1)
+
+    def test_notification_for_muliple_posts(self):
+        """Test if multiple mails are send for mulitiple blogs"""
+        user2 = User.objects.create_user(username='testuser', email='testuser@gmail.com', password='testuser')
+        user2.is_staff = True
+        user2.save()
+        blog_entry2 = create_test_blog_entry(user2)
+        create_test_comment(self.blog_entry)
+        create_test_comment(blog_entry2)
+        self.assertEqual(len(mail.outbox), 0)
+        call_command('comment_notify')
+        self.assertEqual(len(mail.outbox), 2)

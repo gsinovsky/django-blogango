@@ -1,5 +1,4 @@
-{% load blogango_filters analytics %}
-{% blogango_extra_context %}
+
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -27,7 +26,7 @@
   <div id="page_container">
     <!-- HEADER STARTS HERE -->
     <div id="header">
-	  <a href="{% url "blogango_index" %}">
+	  <a href="{% url 'blogango_index' %}">
 		<img src="{{ STATIC_URL }}blogango/images/agiliq_blog_logo.png" width="206" height="67" alt="Agiliq Solutions" />
 	  </a>
 	  <h2 class="message">
@@ -137,6 +136,6 @@
 });
 }
 </script>
-{% analytics %}
+
 </body>
 </html>

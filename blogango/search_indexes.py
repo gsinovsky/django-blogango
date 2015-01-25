@@ -5,7 +5,8 @@ from blogango.models import BlogEntry
 
 
 class BlogEntryIndex(indexes.SearchIndex, indexes.Indexable):
-    text = indexes.CharField(model_attr='text', document=True, use_template=True)
+    text = indexes.CharField(model_attr='text',
+                             document=True, use_template=True)
     title = indexes.CharField(model_attr='title')
     summary = indexes.CharField(model_attr='summary')
     created_by = indexes.CharField(model_attr='created_by')
@@ -20,4 +21,5 @@ class BlogEntryIndex(indexes.SearchIndex, indexes.Indexable):
 
     def index_queryset(self, using=None):
         """Used when the entire index for model is updated."""
-        return self.get_model().objects.filter(publish_date__lte=datetime.datetime.now())
+        return self.get_model().objects.filter(
+            publish_date__lte=datetime.datetime.now())
