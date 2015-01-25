@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 from django.db import models
 from django.contrib.auth.models import User
 from django.conf import settings
-from django.contrib.comments.moderation import CommentModerator, moderator
+from django.contrib.comments.moderation import CommentModerator
 from django.template.defaultfilters import slugify
 from django.core.urlresolvers import reverse
 
@@ -264,9 +264,3 @@ def _infer_title_or_slug(text):
 
 def _generate_summary(text):
     return ' '.join(text.split()[:100])
-
-if Comment not in moderator._registry:
-    moderator.register(Comment, CommentModerator)
-
-from south.modelsinspector import add_introspection_rules
-add_introspection_rules([], ["^markupfield\.fields\.MarkupField"])

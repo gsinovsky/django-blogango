@@ -12,7 +12,6 @@ def pingback_blog_handler(year, month, slug, **kwargs):
                                  created_on__month=month, 
                                  slug=slug, 
                                  is_published=True)
-    
 
 # ping_details = {'blogango_details': pingback_blog_handler}
 
@@ -26,3 +25,5 @@ def get_blog_text(instance):
     return instance.text.rendered
 
 signals.post_save.connect(ping_external_links(content_func=get_blog_text, url_attr='get_absolute_url'), sender=BlogEntry, weak=True)
+
+default_app_config = 'blogango.apps.BlogangoConfig'
