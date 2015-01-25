@@ -251,12 +251,6 @@ class BlogRoll(models.Model):
     def get_absolute_url(self):
         return self.url
 
-
-class CommentModerator(CommentModerator):
-    email_notification = True
-    enable_field = 'is_public'
-
-
 #Helper methods
 def _infer_title_or_slug(text):
     return '-'.join(text.split()[:5])
