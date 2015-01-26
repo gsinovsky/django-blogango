@@ -482,9 +482,9 @@ def _get_sidebar_objects(request):
 def _get_archive_months():
     """Get the months for which at least one entry exists"""
     dates = BlogEntry.objects.filter(is_page=False,
-                                     is_published=True).dates('created_on',
-                                                              'month',
-                                                              order='DESC')
+                                     is_published=True).datetimes('created_on',
+                                                                  'month',
+                                                                  order='DESC')
     return dates
 
 
