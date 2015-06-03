@@ -51,8 +51,8 @@ class Blog(models.Model):
 class BlogPublishedManager(models.Manager):
     use_for_related_fields = True
 
-    def get_query_set(self):
-        return super(BlogPublishedManager, self).get_query_set().filter(
+    def get_queryset(self):
+        return super(BlogPublishedManager, self).get_queryset().filter(
             is_published=True,
             publish_date__lte=datetime.now())
 
@@ -175,8 +175,8 @@ class BlogEntry(models.Model):
 
 
 class CommentManager(models.Manager):
-    def get_query_set(self):
-        return super(CommentManager, self).get_query_set().filter(is_public=True)
+    def get_queryset(self):
+        return super(CommentManager, self).get_queryset().filter(is_public=True)
 
 
 class BaseComment(models.Model):
